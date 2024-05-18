@@ -1,4 +1,12 @@
 enum RoutesEnum {
+  login(
+    name: "Inicio de sesión",
+    path: "/login",
+  ),
+  signup(
+    name: "Registro de usuarios",
+    path: "/signup",
+  ),
   home(
     name: "Inicio",
     path: "/",
