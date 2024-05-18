@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vecino_vigilante/configurations/routes_enum.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
 
 class PopupMenuAvatarButton extends StatelessWidget {
@@ -19,7 +20,7 @@ class PopupMenuAvatarButton extends StatelessWidget {
       ),
       onSelected: (value) {
         if (value == "logout") {
-          context.go("/login");
+          context.go(RoutesEnum.login.path);
           AuthUtils.logout();
         }
       },
