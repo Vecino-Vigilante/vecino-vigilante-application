@@ -25,19 +25,19 @@ Future<String?> _authGuard(BuildContext context, GoRouterState state) async {
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
-      path: "/login",
+      path: RoutesEnum.login.path,
       builder: (BuildContext context, GoRouterState state) {
-        return LoginPage();
+        return const LoginPage();
       },
     ),
     GoRoute(
-      path: "/signup",
+      path: RoutesEnum.signup.path,
       builder: (BuildContext context, GoRouterState state) {
         return SignUpPage();
       },
     ),
     GoRoute(
-      path: "/",
+      path: RoutesEnum.home.path,
       builder: (BuildContext context, GoRouterState state) {
         return const AllComplaintsPage();
       },
@@ -59,7 +59,7 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: "/crime-map",
+      path: RoutesEnum.crimeMap.path,
       builder: (BuildContext context, GoRouterState state) {
         return const CrimeMapPage();
       },
@@ -68,7 +68,7 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: "/new-complaint",
+      path: RoutesEnum.newComplaint.path,
       builder: (BuildContext context, GoRouterState state) {
         return NewComplaintPage();
       },
@@ -77,7 +77,7 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: "/emergency-numbers",
+      path: RoutesEnum.emergencyNumbers.path,
       builder: (BuildContext context, GoRouterState state) {
         return const EmergencyNumbersPage();
       },

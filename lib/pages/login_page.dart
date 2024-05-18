@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vecino_vigilante/configurations/routes_enum.dart';
 import 'package:vecino_vigilante/http/login.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
 
-class LoginPage extends StatelessWidget {
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  LoginPage({
+class LoginPage extends StatefulWidget {
+  const LoginPage({
     super.key,
   });
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +26,9 @@ class LoginPage extends StatelessWidget {
 
     void submit() {
       if (_formKey.currentState?.saveAndValidate() ?? false) {
-        late SnackBar snackBar;
+        setState(() {
+          _isSubmitting = true;
+        });
 
         login(
           _formKey.currentState!.value["email"],
@@ -30,7 +40,7 @@ class LoginPage extends StatelessWidget {
               context.go(RoutesEnum.home.path);
             });
           } else {
-            snackBar = const SnackBar(
+            SnackBar snackBar = const SnackBar(
               content: Text(
                 "¡Oh no! Algo salió mal mientras intentabamos iniciar tu sesión. Revisa tus datos e intenta más tarde.",
               ),
@@ -40,6 +50,10 @@ class LoginPage extends StatelessWidget {
 
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
+        }).whenComplete(() {
+          setState(() {
+            _isSubmitting = false;
+          });
         });
       }
     }
@@ -53,6 +67,7 @@ class LoginPage extends StatelessWidget {
         child: SafeArea(
           child: SingleChildScrollView(
             child: FormBuilder(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               key: _formKey,
               child: Column(
                 children: [
@@ -87,6 +102,10 @@ class LoginPage extends StatelessWidget {
                       labelText: "Correo electrónico",
                     ),
                     name: "email",
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                      FormBuilderValidators.email(),
+                    ]),
                   ),
                   const SizedBox(
                     height: 24,
@@ -99,16 +118,31 @@ class LoginPage extends StatelessWidget {
                       hintText: "•••••••••••••",
                       labelText: "Contraseña",
                     ),
-                    obscureText: true,
                     name: "password",
+                    obscureText: true,
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(),
+                    ]),
                   ),
                   const SizedBox(
                     height: 34,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: submit,
+                    child: ElevatedButton.icon(
+                      icon: _isSubmitting
+                          ? Container(
+                              width: 24,
+                              height: 24,
+                              padding: const EdgeInsets.all(2.0),
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : Container(),
+                      label: const Text("Iniciar sesión"),
+                      onPressed: _isSubmitting ? null : submit,
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                           theme.colorScheme.primary,
@@ -117,7 +151,6 @@ class LoginPage extends StatelessWidget {
                           theme.colorScheme.onPrimary,
                         ),
                       ),
-                      child: const Text("Iniciar sesión"),
                     ),
                   ),
                   const SizedBox(

@@ -6,12 +6,19 @@ import 'package:vecino_vigilante/configurations/routes_enum.dart';
 import 'package:vecino_vigilante/http/signup.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
 
-class SignUpPage extends StatelessWidget {
-  final _formKey = GlobalKey<FormBuilderState>();
-
-  SignUpPage({
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({
     super.key,
   });
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +26,10 @@ class SignUpPage extends StatelessWidget {
 
     void submit() {
       if (_formKey.currentState?.saveAndValidate() ?? false) {
+        setState(() {
+          _isSubmitting = true;
+        });
+
         late SnackBar snackBar;
 
         signup(_formKey.currentState!.value).then((response) {
@@ -44,6 +55,10 @@ class SignUpPage extends StatelessWidget {
           }
 
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }).whenComplete(() {
+          setState(() {
+            _isSubmitting = false;
+          });
         });
       }
     }
@@ -92,7 +107,7 @@ class SignUpPage extends StatelessWidget {
                         child: FormBuilderTextField(
                           decoration: const InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
-                            hintText: "John",
+                            hintText: "Juan",
                             labelText: "Nombre",
                           ),
                           name: "name",
@@ -108,7 +123,7 @@ class SignUpPage extends StatelessWidget {
                         child: FormBuilderTextField(
                           decoration: const InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.always,
-                            hintText: "Doe",
+                            hintText: "Pérez",
                             labelText: "Apellido",
                           ),
                           name: "lastname",
@@ -178,8 +193,20 @@ class SignUpPage extends StatelessWidget {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: submit,
+                    child: ElevatedButton.icon(
+                      icon: _isSubmitting
+                          ? Container(
+                              width: 24,
+                              height: 24,
+                              padding: const EdgeInsets.all(2.0),
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : Container(),
+                      label: const Text("Regístrate"),
+                      onPressed: _isSubmitting ? null : submit,
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                           theme.colorScheme.primary,
@@ -188,7 +215,6 @@ class SignUpPage extends StatelessWidget {
                           theme.colorScheme.onPrimary,
                         ),
                       ),
-                      child: const Text("Regístrate"),
                     ),
                   ),
                   const SizedBox(

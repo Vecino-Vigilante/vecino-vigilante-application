@@ -7,7 +7,4 @@
 7. Mostrar los comentarios de una incidencia.
 8. Permitir añadir comentarios a una incidencia.
 9. Generar la página de números de emergencia.
-10. Hacer la página de registro y login.
-11. Hacer que la información del login sea la utilizada en el drawer.
-12. Manejar las sesiones (JWT) para hacer las llamadas al API.
-13. Refactorizar el código :)
+10. Refactorizar el código :)
