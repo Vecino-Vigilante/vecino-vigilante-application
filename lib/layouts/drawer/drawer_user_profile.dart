@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vecino_vigilante/http/responses/authenticated_user_response.dart';
+import 'package:vecino_vigilante/dto/authenticated_user_dto.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
-import 'package:vecino_vigilante/widgets/popup_menu_avatar_button.dart';
+import 'package:vecino_vigilante/widgets/circle_avatar_with_menu.dart';
 
 class DrawerUserProfile extends StatelessWidget {
   const DrawerUserProfile({
@@ -10,7 +10,7 @@ class DrawerUserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<AuthenticatedUserResponseDTO?>(
+    return FutureBuilder<AuthenticatedUserDTO?>(
       future: AuthUtils.getAuthenticatedUser(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -20,7 +20,7 @@ class DrawerUserProfile extends StatelessWidget {
           return UserAccountsDrawerHeader(
             accountName: Text(userFullName),
             accountEmail: Text(snapshot.data?.userEmail ?? ""),
-            currentAccountPicture: PopupMenuAvatarButton(
+            currentAccountPicture: CircleAvatarWithMenu(
               username: userFullName,
             ),
           );

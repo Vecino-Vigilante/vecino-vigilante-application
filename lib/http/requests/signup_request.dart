@@ -1,25 +1,25 @@
 import 'dart:convert';
 
-SignupRequestDTO signupRequestFromJson(String str) =>
-    SignupRequestDTO.fromJson(json.decode(str));
+SignupRequest signupRequestFromJson(String str) =>
+    SignupRequest.fromJson(json.decode(str));
 
-String signupRequestToJson(SignupRequestDTO data) => json.encode(data.toJson());
+String signupRequestToJson(SignupRequest data) => json.encode(data.toJson());
 
-class SignupRequestDTO {
-  String name;
-  String lastName;
-  String email;
-  String password;
+class SignupRequest {
+  String? name;
+  String? lastName;
+  String? email;
+  String? password;
 
-  SignupRequestDTO({
+  SignupRequest({
     required this.name,
     required this.lastName,
     required this.email,
     required this.password,
   });
 
-  factory SignupRequestDTO.fromJson(Map<String, dynamic> json) =>
-      SignupRequestDTO(
+  factory SignupRequest.fromJson(Map<String, dynamic> json) =>
+      SignupRequest(
         name: json["name"],
         lastName: json["last_name"],
         email: json["email"],

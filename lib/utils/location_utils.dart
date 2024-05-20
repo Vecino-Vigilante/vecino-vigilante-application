@@ -1,8 +1,9 @@
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:vecino_vigilante/models/position.dart';
+import 'package:google_geocoding_api/google_geocoding_api.dart';
+import 'package:vecino_vigilante/dto/location_dto.dart';
 
-Future<PositionModel> getCurrentUserLocation() async {
+Future<LocationDTO> getCurrentUserLocation() async {
   await Geolocator.requestPermission().then((value) {}).onError(
     (error, stackTrace) async {
       await Geolocator.requestPermission();
@@ -11,17 +12,17 @@ Future<PositionModel> getCurrentUserLocation() async {
 
   Position currentPosition = await Geolocator.getCurrentPosition();
 
-  List<Placemark> placemarks = await placemarkFromCoordinates(
-    currentPosition.latitude,
-    currentPosition.longitude,
+  final api = GoogleGeocodingApi(dotenv.get("GOOGLE_MAPS_API_KEY"));
+
+  final placeSearchByPosition = await api.reverse(
+    '${currentPosition.latitude},${currentPosition.longitude}',
+    language: "en",
   );
-  Placemark? placemark = placemarks.firstOrNull;
 
-  String address = placemark != null ? "${placemark.street}" : "";
-
-  return PositionModel(
+  return LocationDTO(
     latitude: currentPosition.latitude,
     longitude: currentPosition.longitude,
-    address: address,
+    direction:
+        placeSearchByPosition.results.firstOrNull?.formattedAddress ?? "",
   );
 }

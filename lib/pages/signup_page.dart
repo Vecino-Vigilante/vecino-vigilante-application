@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vecino_vigilante/configurations/routes_enum.dart';
+import 'package:vecino_vigilante/http/requests/signup_request.dart';
 import 'package:vecino_vigilante/http/signup.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
 
@@ -32,7 +33,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
         late SnackBar snackBar;
 
-        signup(_formKey.currentState!.value).then((response) {
+        final request = SignupRequest(
+          email: _formKey.currentState?.value["email"],
+          lastName: _formKey.currentState?.value["lastname"],
+          name: _formKey.currentState?.value["name"],
+          password: _formKey.currentState?.value["password"],
+        );
+
+        signup(request).then((response) {
           if (response != null) {
             snackBar = const SnackBar(
               content: Text("¡Usuario registrado correctamente!"),

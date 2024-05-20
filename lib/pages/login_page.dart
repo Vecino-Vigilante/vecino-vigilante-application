@@ -4,6 +4,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vecino_vigilante/configurations/routes_enum.dart';
 import 'package:vecino_vigilante/http/login.dart';
+import 'package:vecino_vigilante/http/requests/login_request.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,10 +31,12 @@ class _LoginPageState extends State<LoginPage> {
           _isSubmitting = true;
         });
 
-        login(
-          _formKey.currentState!.value["email"],
-          _formKey.currentState!.value["password"],
-        ).then((response) {
+        final LoginRequest loginRequest = LoginRequest(
+          username: _formKey.currentState!.value["email"],
+          password: _formKey.currentState!.value["password"],
+        );
+
+        login(loginRequest).then((response) {
           if (response != null) {
             AuthUtils.setAuthenticatedUser(response).then((success) {
               _formKey.currentState!.reset();

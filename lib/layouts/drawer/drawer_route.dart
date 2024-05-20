@@ -18,7 +18,10 @@ class DrawerRoute extends StatelessWidget {
     return ListTile(
       leading: Icon(icon),
       title: Text(label),
-      onTap: () => context.go(path),
+      onTap: () {
+        context.go(path);
+        Navigator.pop(context);
+      },
     );
   }
 }

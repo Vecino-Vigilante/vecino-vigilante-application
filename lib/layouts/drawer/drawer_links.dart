@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vecino_vigilante/configurations/routes_enum.dart';
-import 'package:vecino_vigilante/layouts/main/drawer/drawer_footer.dart';
-import 'package:vecino_vigilante/layouts/main/drawer/drawer_route.dart';
-import 'package:vecino_vigilante/layouts/main/drawer/drawer_user_profile.dart';
+import 'package:vecino_vigilante/layouts/drawer/drawer_footer.dart';
+import 'package:vecino_vigilante/layouts/drawer/drawer_route.dart';
+import 'package:vecino_vigilante/layouts/drawer/drawer_user_profile.dart';
 
-class DrawerNavigation extends StatelessWidget {
-  const DrawerNavigation({
+class DrawerLinks extends StatelessWidget {
+  const DrawerLinks({
     super.key,
   });
 
@@ -18,20 +18,15 @@ class DrawerNavigation extends StatelessWidget {
         "path": RoutesEnum.home.path
       },
       {
-        "icon": Icons.location_city,
-        "label": RoutesEnum.crimeMap.name,
-        "path": RoutesEnum.crimeMap.path
-      },
-      {
         "icon": Icons.add_comment_rounded,
         "label": RoutesEnum.newComplaint.name,
         "path": RoutesEnum.newComplaint.path
       },
       {
-        "icon": Icons.local_police,
-        "label": RoutesEnum.emergencyNumbers.name,
-        "path": RoutesEnum.emergencyNumbers.path
-      }
+        "icon": Icons.location_city,
+        "label": RoutesEnum.crimeMap.name,
+        "path": RoutesEnum.crimeMap.path
+      },
     ];
 
     return Drawer(
