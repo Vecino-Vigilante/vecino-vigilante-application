@@ -1,12 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vecino_vigilante/configurations/routes_enum.dart';
 import 'package:vecino_vigilante/utils/auth_utils.dart';
 
-class PopupMenuAvatarButton extends StatelessWidget {
+class CircleAvatarWithMenu extends StatelessWidget {
   final String username;
 
-  const PopupMenuAvatarButton({
+  const CircleAvatarWithMenu({
     super.key,
     required this.username,
   });
@@ -15,12 +16,13 @@ class PopupMenuAvatarButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       child: CircleAvatar(
-        backgroundImage: NetworkImage(
-            "https://api.dicebear.com/7.x/micah/png?seed=$username"),
+        child: CachedNetworkImage(
+          imageUrl: "https://api.dicebear.com/7.x/micah/png?seed=$username",
+        ),
       ),
       onSelected: (value) {
         if (value == "logout") {
-          context.go(RoutesEnum.login.path);
+          context.pushReplacement(RoutesEnum.login.path);
           AuthUtils.logout();
         }
       },

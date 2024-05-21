@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-AuthenticatedUserResponse authenticatedUserResponseFromJson(String str) =>
-    AuthenticatedUserResponse.fromJson(json.decode(str));
+AuthenticatedUserDTO authenticatedUserDTOFromJson(String str) =>
+    AuthenticatedUserDTO.fromJson(json.decode(str));
 
-String authenticatedUserResponseToJson(AuthenticatedUserResponse data) =>
+String authenticatedUserDTOToJson(AuthenticatedUserDTO data) =>
     json.encode(data.toJson());
 
-class AuthenticatedUserResponse {
+class AuthenticatedUserDTO {
   String? accessToken;
   String? userEmail;
   String? userId;
@@ -14,17 +14,17 @@ class AuthenticatedUserResponse {
   String? userName;
   String? userProfileImage;
 
-  AuthenticatedUserResponse({
-    required this.accessToken,
-    required this.userEmail,
-    required this.userId,
-    required this.userLastName,
-    required this.userName,
-    required this.userProfileImage,
+  AuthenticatedUserDTO({
+    this.accessToken,
+    this.userEmail,
+    this.userId,
+    this.userLastName,
+    this.userName,
+    this.userProfileImage,
   });
 
-  factory AuthenticatedUserResponse.fromJson(Map<String, dynamic> json) =>
-      AuthenticatedUserResponse(
+  factory AuthenticatedUserDTO.fromJson(Map<String, dynamic> json) =>
+      AuthenticatedUserDTO(
         accessToken: json["access_token"],
         userEmail: json["user_email"],
         userId: json["user_id"],

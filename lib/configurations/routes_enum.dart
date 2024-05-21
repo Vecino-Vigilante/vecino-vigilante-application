@@ -18,10 +18,6 @@ enum RoutesEnum {
   newComplaint(
     name: "Nueva denuncia",
     path: "/new-complaint",
-  ),
-  emergencyNumbers(
-    name: "Números de emergencia",
-    path: "/emergency-numbers",
   );
 
   const RoutesEnum({
