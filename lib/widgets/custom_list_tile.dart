@@ -26,10 +26,16 @@ class CustomListTile extends StatelessWidget {
         const SizedBox(
           width: 16,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [title, subtitle],
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min, // Setting mainAxisSize to min
+            children: [
+              title,
+              subtitle,
+            ],
+          ),
         ),
         const SizedBox(width: 16),
         trailing ?? Container()

@@ -1,26 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vecino_vigilante/configurations/routes_enum.dart';
+import 'package:vecino_vigilante/dto/complaint_dto.dart';
 import 'package:vecino_vigilante/http/get_all_complaints.dart';
-import 'package:vecino_vigilante/layouts/main/app_bar.dart';
-import 'package:vecino_vigilante/layouts/main/drawer/drawer_navigation.dart';
-import 'package:vecino_vigilante/models/complaint_model.dart';
+import 'package:vecino_vigilante/layouts/main_layout.dart';
 import 'package:vecino_vigilante/widgets/complaint_card.dart';
-import 'package:vecino_vigilante/widgets/complaints_search_bar.dart';
+import 'package:vecino_vigilante/widgets/custom_search_bar.dart';
 
-class AllComplaintsPage extends StatelessWidget {
+class AllComplaintsPage extends StatefulWidget {
   const AllComplaintsPage({
     super.key,
   });
 
   @override
+  State<AllComplaintsPage> createState() => _AllComplaintsPageState();
+}
+
+class _AllComplaintsPageState extends State<AllComplaintsPage> {
+  bool _isLoading = true;
+  List<ComplaintDTO> _complaints = [];
+  List<ComplaintDTO> _filteredComplaints = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchComplaints();
+  }
+
+  Future<void> _fetchComplaints() async {
+    try {
+      final complaints = await getAllComplaints();
+
+      setState(() {
+        _complaints = complaints ?? [];
+        _filteredComplaints = complaints ?? [];
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _filterComplaints(String query) {
+    setState(() {
+      _filteredComplaints = _complaints.where((complaint) {
+        final description = complaint.description?.toLowerCase();
+        final direction = complaint.location?.direction?.toLowerCase();
+        final queryLower = query.toLowerCase();
+
+        return (description != null && description.contains(queryLower)) ||
+            (direction != null && direction.contains(queryLower));
+      }).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: Navbar.render(context),
-      drawer: const DrawerNavigation(),
-      resizeToAvoidBottomInset: false,
+    return MainLayout(
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: theme.primaryColor,
         foregroundColor: theme.colorScheme.onPrimary,
@@ -28,52 +68,46 @@ class AllComplaintsPage extends StatelessWidget {
         label: const Text("Crear denuncia"),
         onPressed: () => context.push(RoutesEnum.newComplaint.path),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 31),
-          child: FutureBuilder<List<ComplaintModel>>(
-            future: getAllComplaints(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : _complaints.isEmpty
+              ? const Center(
+                  child: Text(
+                    "No hay incidencias disponibles para mostrar.",
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : Column(
                   children: [
-                    const ComplaintsSearchBar(),
+                    CustomSearchBar(
+                      onSearch: _filterComplaints,
+                      placeholder: "Buscar denuncias por título o dirección",
+                    ),
                     const SizedBox(
                       height: 33,
                     ),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data?.length,
-                        itemBuilder: (context, index) {
-                          final complaint = snapshot.data?.elementAt(index);
+                      child: RefreshIndicator(
+                        onRefresh: _fetchComplaints,
+                        child: ListView.builder(
+                          itemCount: _filteredComplaints.length,
+                          itemBuilder: (context, index) {
+                            final complaint = _filteredComplaints[index];
 
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: ComplaintCard(
-                              complaint: complaint!,
-                            ),
-                          );
-                        },
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: ComplaintCard(
+                                complaint: complaint,
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    )
+                    ),
                   ],
-                );
-              } else if (snapshot.hasError) {
-                return const Center(
-                  child: Text(
-                    "¡Oh, no! Se produjo un error al intentar obtener las denuncias.",
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          ),
-        ),
-      ),
+                ),
     );
   }
 }
